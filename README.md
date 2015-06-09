@@ -16,7 +16,6 @@ The variables that can be passed to this role and a brief description about
 them are as follows.
 
 ```
-dotdeb_repo_version: wheezy
 dotdeb_extra_repo: True
 dotdeb_extra_repo_version: wheezy-php56
 ```

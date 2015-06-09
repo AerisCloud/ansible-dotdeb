@@ -1,11 +1,20 @@
 ---
 
+- name: "Set dotdeb_repo_version to wheezy"
+  set_fact: dotdeb_repo_version=wheezy
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int == 7
+
+- name: "Set dotdeb_repo_version to jessie"
+  set_fact: dotdeb_repo_version=jessie
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int == 8
+
 - name: add dotdeb repository
   apt_repository: repo='{{ item }}' state=present
   register: dotdeb_installed
   with_items:
     - "deb http://packages.dotdeb.org {{ dotdeb_repo_version }} all"
     - "deb-src http://packages.dotdeb.org {{ dotdeb_repo_version }} all"
+  when: ansible_distribution == 'Debian' and is defined
   notify: update apt cache
   tags: dotdeb
 
@@ -14,11 +23,11 @@
   with_items:
     - "deb http://packages.dotdeb.org {{ dotdeb_extra_repo_version }} all"
     - "deb-src http://packages.dotdeb.org {{ dotdeb_extra_repo_version }} all"
-  when: dotdeb_extra_repo
+  when: ansible_distribution == 'Debian' and dotdeb_extra_repo
   notify: update apt cache
   tags: dotdeb
 
 - name: install dotdeb key
   apt_key: url='http://www.dotdeb.org/dotdeb.gpg'
-  when: dotdeb_installed|changed
+  when: ansible_distribution == 'Debian' and dotdeb_installed|changed
   tags: dotdeb
