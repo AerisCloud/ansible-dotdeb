@@ -1,5 +1,4 @@
 ---
-
 - name: "Set dotdeb_repo_version to wheezy"
   set_fact: dotdeb_repo_version=wheezy
   when: ansible_distribution == 'Debian' and ansible_distribution_major_version|int == 7
@@ -14,7 +13,7 @@
   with_items:
     - "deb http://packages.dotdeb.org {{ dotdeb_repo_version }} all"
     - "deb-src http://packages.dotdeb.org {{ dotdeb_repo_version }} all"
-  when: ansible_distribution == 'Debian' and is defined
+  when: ansible_distribution == 'Debian' and dotdeb_repo_version is defined
   notify: update apt cache
   tags: dotdeb
 
@@ -30,4 +29,7 @@
 - name: install dotdeb key
   apt_key: url='http://www.dotdeb.org/dotdeb.gpg'
   when: ansible_distribution == 'Debian' and dotdeb_installed|changed
+  tags: dotdeb
+
+- meta: flush_handlers
   tags: dotdeb
